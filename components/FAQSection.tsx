@@ -1,119 +1,77 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { FAQS } from "@/data/menuData";
-import { ChevronDown, HelpCircle, MessageSquare } from "lucide-react";
+import { ChevronDown, ArrowRight } from "lucide-react";
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const toggleAccordion = (idx: number) => {
-    setOpenIndex(openIndex === idx ? null : idx);
-  };
+  // Take the first 5 core FAQs for the homepage
+  const selectedFaqs = FAQS.slice(0, 5);
 
   return (
-    <section id="faq" className="py-20 lg:py-28 relative bg-slate-50/70 border-t border-slate-200/80 overflow-hidden">
+    <section id="faq" className="py-16 sm:py-24 bg-white border-b border-[#B69A59]/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-            <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
-            <span>Got Questions? We Have Answers</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            Frequently Asked <span className="gold-gradient-text">Questions</span>
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="text-xs uppercase font-bold tracking-wider text-[#B69A59]">
+            Frequently Asked Questions
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#111111] mt-2">
+            Clear answers to common questions
           </h2>
-
-          <p className="mt-4 text-base text-slate-600">
-            Everything you need to know about our master chef meals, refrigeration standards, and doorstep delivery.
+          <p className="mt-3 text-sm text-[#111111]/70 leading-relaxed">
+            Everything you need to know about our daily inclusions, portion sizes, delivery schedule, and trial orders.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Accordion List with Framer Motion */}
-        <div className="mt-12 space-y-3.5">
-          {FAQS.map((faq, idx) => {
+        {/* Accordion List */}
+        <div className="space-y-3.5">
+          {selectedFaqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="rounded-2xl bg-white border border-slate-200/90 shadow-sm overflow-hidden transition-all"
+                className="rounded-xl bg-[#F7F5EF] border border-[#B69A59]/25 overflow-hidden transition-all duration-200"
               >
                 <button
-                  onClick={() => toggleAccordion(idx)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 focus:outline-none"
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : idx)}
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-[#111111] text-sm sm:text-base hover:text-[#B69A59] transition-colors"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-sm sm:text-base font-extrabold text-slate-900 hover:text-amber-700 transition-colors">
-                    {faq.q}
+                  <span className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#B69A59] shrink-0" />
+                    <span>{faq.q}</span>
                   </span>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.25 }}
-                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-                      isOpen ? "bg-amber-500 text-slate-950 font-bold" : "bg-slate-100 text-slate-600"
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#B69A59] transition-transform duration-200 shrink-0 ${
+                      isOpen ? "rotate-180" : ""
                     }`}
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </motion.div>
+                  />
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-5 sm:px-6 pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 font-medium">
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                {isOpen && (
+                  <div className="px-5 pb-5 text-xs sm:text-sm text-[#111111]/80 leading-relaxed border-t border-[#B69A59]/15 pt-3.5">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
 
-        {/* Help CTA in Light Mode */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-12 p-6 rounded-3xl bg-white text-center flex flex-col sm:flex-row items-center justify-between gap-4 border border-slate-200 shadow-md"
-        >
-          <div className="text-left">
-            <h4 className="text-sm font-extrabold text-slate-900">Have a custom dietary requirement?</h4>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Talk directly with Executive Chef Japleen Singh on WhatsApp for bespoke macro prep.
-            </p>
-          </div>
-          <motion.a
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            href="https://wa.me/14377576969?text=Hi%20Chef%20Japleen%2C%20I%20have%20a%20specific%20dietary%20question%20about%20JP%20Tiffin%20%26%20Meals."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-all flex items-center gap-1.5 whitespace-nowrap shadow-sm"
+        {/* Link to view all FAQs */}
+        <div className="mt-8 text-center">
+          <Link
+            href="/faq"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#111111] hover:text-[#B69A59] transition-colors"
           >
-            <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Chat on WhatsApp</span>
-          </motion.a>
-        </motion.div>
+            <span>View all 12 answers on our FAQ page</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </div>
     </section>
   );
